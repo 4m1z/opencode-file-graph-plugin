@@ -1,0 +1,21 @@
+{
+  "name": "opencode-graph-live",
+  "version": "0.1.0",
+  "description": "Live file-activity graph for opencode sidebar (which files the agent is reading / modifying)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tui": "./src/tui.tsx"
+  },
+  "dependencies": {
+    "@opencode/plugin": "latest"
+  },
+  "peerDependencies": {
+    "@opentui/core": "^0.5.12",
+    "@opentui/solid": "^0.5.12",
+    "solid-js": "^1.9.12"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  }
+}
