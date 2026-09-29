@@ -1,66 +1,56 @@
 # opencode-graph-live
 
-Live file-activity graph for the opencode TUI sidebar. Shows which files
-the agent is currently reading (`○`) and modifying (`●`), grouped as a
-compact tree — the red box in the mockup, i.e. the `sidebar.content` slot.
+Live file-activity graph for the opencode TUI sidebar. Shows which files the agent is reading and editing, right under the MCP block.
 
 ```
-◉ files · live
-cli.json
-○ Cargo.toml
-○ package.json
-src/
-  ├─ ○ main.rs
-  └─ ○ index.ts
-2 edit · 3 read
+● files · live
+▸ main.rs ×3 · edit
+! lib.rs · 12s
+● index.ts ×2 · 2m
+3 files · 2 edit · 1 running
 ```
 
-The running tool call's file is marked `▸`. A file that was ever edited
-stays green even if it is read again later.
-
-## How it works
-
-- `src/tui.tsx` (CLI half) claims the `sidebar.content` slot and renders
-  the graph. It reads tool calls from `data.session.message.list(sessionID)`
-  (`read` → reading, `edit`/`write`/`patch` → modified), rebases paths onto
-  the session directory, keeps the 8 most recent files, and re-renders on
-  every server event mentioning the session (`session.tool.called`,
-  `session.tool.success`, `message.content.updated`, … via `data.listen`).
-- `src/index.ts` (server half) is a no-op loader so the package also works
-  when installed through `plugins` in `opencode.json(c)`, which auto-loads
-  the `./tui` entrypoint next to it.
-
-No server hooks, no polling, no extra processes.
+Legend: `○` read · `●` edited · `▸` running (with tool name) · `!` failed · `?` awaiting permission. Counts (`×3`) are total touches; `· 12s` is recency.
 
 ## Install
 
-Published-package style (recommended for dev):
+Requires an opencode build with the `sidebar.content` TUI slot and `./tui` plugin entrypoint.
 
-```jsonc // opencode.jsonc
-{
-  "plugins": ["./path/to/opencode-graph-live"]
-}
-```
-
-or CLI-only (stays active against remote servers):
-
-```jsonc // ~/.config/opencode/cli.json
-{
-  "plugins": ["/home/amir/Personal/opencode-graph-live"]
-}
-```
-
-Discovery-dir style (no config edit):
+**Option 1 — drop-in (no config edit):**
 
 ```sh
 mkdir -p ~/.config/opencode/plugins/graph-live
-cp src/index.ts ~/.config/opencode/plugins/graph-live/index.ts
-cp src/tui.tsx ~/.config/opencode/plugins/graph-live/tui.tsx
+cp src/index.ts src/tui.tsx ~/.config/opencode/plugins/graph-live/
 ```
 
-Then restart the TUI (`opencode service restart` if the server caches
-plugins) and open a session — the graph appears under the MCP block on
-the right sidebar.
+**Option 2 — from config:**
+
+```jsonc // opencode.json / opencode.jsonc
+{
+  "plugins": ["github:user/opencode-graph-live"]
+  // or a local checkout:
+  // "plugins": ["./path/to/opencode-graph-live"]
+}
+```
+
+Then restart the TUI and open a session. The panel shows `no files yet` until the agent touches a file.
+
+## Commands (Ctrl+P)
+
+| Command | What it does |
+|---|---|
+| Toggle File Graph | Enable/disable the sidebar panel (persisted) |
+| File Graph: cycle filter | `all → edits → reads` |
+| File Graph: show edits/reads/all | Filter the list |
+| File Graph Detail (`/files`) | Full per-file timeline in a session panel (`f` fullscreen) |
+| File Graph: show full paths | Picker with full paths → toast reveals the absolute path |
+
+## How it works
+
+- `src/tui.tsx` renders the `sidebar.content` slot. It derives activity from `data.session.message.list(sessionID)` (`read` → reading, `edit`/`write`/`patch` → modified) plus `data.session.permission.list()` for `? pending`, rebases paths onto the session directory, sorts running → error → pending → most-recent, and syncs via a debounced `data.listen` filter. A `session.panel` contribution (`graph-live.detail`) shows the full per-file timeline; edit failures fire a toast + `attention.notify` once each.
+- `src/index.ts` is a no-op server loader so the package also works via `plugins` in `opencode.json(c)`, which auto-loads the `./tui` entrypoint.
+
+No polling, no extra processes. Sidebar stays narrow by design: max 8 files, middle-truncated to ~24 cols, single-line when empty/disabled.
 
 ## Develop
 
@@ -69,7 +59,4 @@ bun install
 bunx tsc --noEmit
 ```
 
-`package.json` exposes `.` → `src/index.ts` and `./tui` → `src/tui.tsx`;
-`@opentui/*` and `solid-js` are peer dependencies resolved by the host at
-runtime. Keep the sidebar render narrow (~24 columns, ≤12 lines): the
-`MAX_FILES` constant and the `truncate` helper enforce that.
+`@opentui/*` and `solid-js` are peer dependencies resolved by the host at runtime.
