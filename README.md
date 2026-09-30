@@ -9,11 +9,11 @@ Live file-activity graph for the opencode TUI sidebar. Shows which files the age
 ● index.ts ×2 · 2m
 3 files · 2 edit · 1 running
 ```
+Legend: ○ read · ● edited · ▸ running (with tool name) · ! failed · ? awaiting permission. Counts (×3) are total touches; · 12s is recency.
 
+preview:
 <img width="549" height="466" alt="image" src="https://github.com/user-attachments/assets/0c9ec4c9-43e8-4228-b7fe-c40eb70f82e1" />
 
-
-Legend: `○` read · `●` edited · `▸` running (with tool name) · `!` failed · `?` awaiting permission. Counts (`×3`) are total touches; `· 12s` is recency.
 
 ## Install
 
