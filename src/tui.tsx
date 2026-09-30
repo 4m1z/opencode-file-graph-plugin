@@ -387,10 +387,8 @@ function toKeyAndDisplay(raw: string, rootNorm: string): { key: string; rel: str
 ////////////////////////////// Derivation //////////////////////////////
 
 function resolveRoot(ctx: PluginContext, sessionID: string): string {
-  const viaRoot = ctx.data.session.root(sessionID)
-  if (viaRoot) {
-    return normalizeRoot(viaRoot)
-  }
+  // NOTE: ctx.data.session.root() returns the family's root *session ID*, not a
+  // directory, so it must not be used here.
   const session = ctx.data.session.get(sessionID)
   if (session?.location?.directory) {
     return normalizeRoot(session.location.directory)
