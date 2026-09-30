@@ -19,20 +19,39 @@ preview:
 
 Requires an opencode build with the `sidebar.content` TUI slot and `./tui` plugin entrypoint.
 
-**Option 1 — drop-in (no config edit):**
+**Option 1 — one command (global, recommended):**
 
 ```sh
-mkdir -p ~/.config/opencode/plugins/graph-live
-cp src/index.ts src/tui.tsx ~/.config/opencode/plugins/graph-live/
+opencode plugin add opencode-graph-live@latest
 ```
 
-**Option 2 — from config:**
+This installs the npm package and registers it in your global config. Manage it with:
+
+```sh
+opencode plugin list
+opencode plugin check
+opencode plugin update opencode-graph-live
+opencode plugin remove opencode-graph-live
+```
+
+Before the first npm publish (or to track git directly), any of these also work:
+
+```sh
+opencode plugin add github:4m1z/opencode-file-graph-plugin
+opencode plugin add github:4m1z/opencode-file-graph-plugin#main
+```
+
+**Option 2 — from config (per-project or pinned):**
 
 ```jsonc // opencode.json / opencode.jsonc
 {
-  "plugins": ["github:user/opencode-graph-live"]
-  // or a local checkout:
-  // "plugins": ["./path/to/opencode-graph-live"]
+  "plugins": ["opencode-graph-live@latest"]
+  // or pin a version:
+  // "plugins": ["opencode-graph-live@0.1.0"]
+  // or track git:
+  // "plugins": ["github:4m1z/opencode-file-graph-plugin"]
+  // or a local checkout (run `bun run build` first so `dist/` exists):
+  // "plugins": ["./path/to/opencode-file-graph-plugin"]
 }
 ```
 
@@ -59,7 +78,15 @@ No polling, no extra processes. Sidebar stays narrow by design: max 8 files, mid
 
 ```sh
 bun install
-bunx tsc --noEmit
+bun run typecheck
+bun run build
+```
+
+Publishing a new version:
+
+```sh
+bun run build
+npm publish --access public
 ```
 
 `@opentui/*` and `solid-js` are peer dependencies resolved by the host at runtime.
