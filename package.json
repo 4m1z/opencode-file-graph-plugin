@@ -1,6 +1,6 @@
 {
   "name": "opencode-graph-live",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Live file-activity graph for opencode sidebar (which files the agent is reading / modifying)",
   "license": "MIT",
   "repository": {
