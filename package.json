@@ -1,6 +1,6 @@
 {
   "name": "opencode-graph-live",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Live file-activity graph for opencode sidebar (which files the agent is reading / modifying)",
   "license": "MIT",
   "repository": {
@@ -13,7 +13,7 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./tui": "./src/tui.tsx"
+    "./tui": "./dist/tui.js"
   },
   "files": [
     "dist/",
