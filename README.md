@@ -35,9 +35,9 @@ opencode plugin remove opencode-graph-live
 **From git or local checkout:**
 
 ```sh
-opencode plugin add github:4m1z/opencode-file-graph-plugin
+opencode plugin add github:4m1z/opencode-graph-live
 # or pin a ref:
-opencode plugin add github:4m1z/opencode-file-graph-plugin#main
+opencode plugin add github:4m1z/opencode-graph-live#main
 ```
 
 Or declare it in config (`opencode.json` / `opencode.jsonc`):
@@ -46,8 +46,8 @@ Or declare it in config (`opencode.json` / `opencode.jsonc`):
 {
   "plugins": ["opencode-graph-live@latest"]
   // "plugins": ["opencode-graph-live@0.1.0"]
-  // "plugins": ["github:4m1z/opencode-file-graph-plugin"]
-  // "plugins": ["./path/to/opencode-file-graph-plugin"] // run `bun run build` first
+  // "plugins": ["github:4m1z/opencode-graph-live"]
+  // "plugins": ["./path/to/opencode-graph-live"] // no build needed, loads from src/
 }
 ```
 
