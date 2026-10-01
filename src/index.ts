@@ -1,4 +1,6 @@
-export default {
+import { Plugin } from "@opencode/plugin"
+
+export default Plugin.define({
   id: "graph-live",
-  async setup(_ctx: unknown): Promise<void> {},
-};
+  async setup(): Promise<void> {},
+})
